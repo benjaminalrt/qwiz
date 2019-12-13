@@ -6,10 +6,8 @@ import QuizList from './Quiz/QuizList';
 
 function App() {
   return (
-    <div className="">
-      <header className="">
-        <QuizList />
-      </header>
+    <div className="MDR">
+      <QuizList key={"QuizList"}/>
     </div>
   );
 }

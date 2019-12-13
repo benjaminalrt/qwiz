@@ -1,0 +1,6 @@
+.question-enabled{
+    display: unset;
+}
+.question-disabled{
+    display: none;
+}
