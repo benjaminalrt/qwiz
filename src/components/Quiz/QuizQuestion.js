@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 
 const QuizQuestion = props => {
+
+    const [answersList, setAnswersList] = useState([])
+
+    useEffect(()=>{
+        let answers = props.question.incorrect_answers;
+        answers.push(props.question.correct_answer);
+        shuffle(answers);
+        setAnswersList(answers);
+    }, []);
 
     const utf8 = (string)=>{
         var txt = document.createElement("textarea");
@@ -12,16 +21,13 @@ const QuizQuestion = props => {
     /* Display answers list */
     const displayChoices = (question,qindex)=>{
         if(question.type==='multiple'){
-            const answers = question.incorrect_answers;
-            answers.push(question.correct_answer);
-            shuffle(answers);
             return(
                 <div className='ok'>
                     <p>Select your response:</p>
-                    {answers.map((answer, id)=>{
+                    {answersList.map((answer, id)=>{
                         return(
                             <div key={'R'+id}>
-                                <input type="radio" id={'q'+(qindex+1)+'r'+id} name={'q'+(qindex+1)} value={answer}/>
+                                <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'r'+id} name={'q'+(qindex+1)} value={answer}/>
                                 <label htmlFor={'q'+(qindex+1)+'r'+id}>{utf8(answer)}</label>
                             </div>
                             )
@@ -35,11 +41,11 @@ const QuizQuestion = props => {
                 <div>
                     <p>Select your response:</p>
                         <div>
-                            <input type="radio" id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="true"/>
+                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="true"/>
                             <label htmlFor={'q'+(qindex+1)+'true'}>True</label>
                         </div>
                         <div>
-                            <input type="radio" id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="false"/>
+                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="false"/>
                             <label htmlFor={'q'+(qindex+1)+'true'}>False</label>
                         </div>
                 </div>
@@ -53,6 +59,7 @@ const QuizQuestion = props => {
         array.sort(() => Math.random() - 0.5);
      }
 
+     console.log(props.question.correct_answer+'55')
 
     /* QUESTIONS LOOK    LIKE :   
         { category: "", correct_answer: "", difficulty: "", incorrect_answers: (n) [], question: "", type: "multiple/boolean" }
@@ -64,6 +71,7 @@ const QuizQuestion = props => {
                 <h5>{utf8(props.question.question)}</h5>
 
                 {displayChoices(props.question)}
+
                 <br/>
                 <button onClick={props.onClick}>Validate</button>
                 

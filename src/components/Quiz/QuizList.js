@@ -7,6 +7,10 @@ const QuizList = props => {
     const [questions, setQuestions] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [index, setIndex] = useState(0);
+    const [answer, setAnswer] = useState("");
+    // const [answers, setAnswers] = useState([]);
+    // const [score, setScore] = useState(0);
+
     const number = 10;
 
     useEffect(() => {
@@ -24,7 +28,12 @@ const QuizList = props => {
         else{
             setIndex(index+1)
         }
-    
+
+    }
+
+
+    const handleChange = (e)=>{
+        setAnswer(e.target.value)
     }
 
     /* QUESTIONS LOOK    LIKE :   
@@ -39,11 +48,13 @@ const QuizList = props => {
             <QuizQuestion
                 question={questions[index]}
                 index={index}
-                onClick={changeQuestion}
+                onClick={()=>{changeQuestion();console.log('cc')}}
+                handleChange={(e)=>handleChange(e)}
                 key={'question'+index}
             />
         : <p>Loading...</p>
         }
+        <p>Réponse choisie: {answer}</p>
         </div>
     )
 
