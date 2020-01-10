@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { utf8 } from "../../utils"
 
 
 const QuizQuestion = props => {
@@ -10,13 +11,7 @@ const QuizQuestion = props => {
         answers.push(props.question.correct_answer);
         shuffle(answers);
         setAnswersList(answers);
-    }, []);
-
-    const utf8 = (string)=>{
-        var txt = document.createElement("textarea");
-        txt.innerHTML = string;
-        return txt.value;
-    }
+    }, [props.question.incorrect_answers, props.question.correct_answer]);
 
     /* Display answers list */
     const displayChoices = (question,qindex)=>{
@@ -32,7 +27,6 @@ const QuizQuestion = props => {
                             </div>
                             )
                         })} 
-                    
                 </div>
             )
         }
@@ -41,12 +35,12 @@ const QuizQuestion = props => {
                 <div>
                     <p>Select your response:</p>
                         <div>
-                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="true"/>
+                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="true"/>
                             <label htmlFor={'q'+(qindex+1)+'true'}>True</label>
                         </div>
                         <div>
-                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="false"/>
-                            <label htmlFor={'q'+(qindex+1)+'true'}>False</label>
+                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="false"/>
+                            <label htmlFor={'q'+(qindex+1)+'false'}>False</label>
                         </div>
                 </div>
             )
@@ -59,7 +53,7 @@ const QuizQuestion = props => {
         array.sort(() => Math.random() - 0.5);
      }
 
-     console.log(props.question.correct_answer+'55')
+     console.log(props.question.correct_answer)
 
     /* QUESTIONS LOOK    LIKE :   
         { category: "", correct_answer: "", difficulty: "", incorrect_answers: (n) [], question: "", type: "multiple/boolean" }
@@ -71,10 +65,6 @@ const QuizQuestion = props => {
                 <h5>{utf8(props.question.question)}</h5>
 
                 {displayChoices(props.question)}
-
-                <br/>
-                <button onClick={props.onClick}>Validate</button>
-                
             </div>
         )
 
