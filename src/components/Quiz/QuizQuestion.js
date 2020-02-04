@@ -35,11 +35,11 @@ const QuizQuestion = props => {
                 <div>
                     <p>Select your response:</p>
                         <div>
-                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="true"/>
+                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="True"/>
                             <label htmlFor={'q'+(qindex+1)+'true'}>True</label>
                         </div>
                         <div>
-                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="false"/>
+                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="False"/>
                             <label htmlFor={'q'+(qindex+1)+'false'}>False</label>
                         </div>
                 </div>

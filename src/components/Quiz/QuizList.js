@@ -80,7 +80,7 @@ const QuizList = props => {
                                             <p>
                                                 {'Question '+(index+1)+': '+utf8(question.question)}<br/>
                                                 {'Your response: '+answers[index]+'.'}
-                                                {answers[index]+(answers[index]===question.correct_answer)?
+                                                {answers[index]===question.correct_answer?
                                                 <>It's a good answer !</>
                                                 :<>That's a bad answer.<br/>
                                                 The good answer was '{utf8(question.correct_answer)}'</>}

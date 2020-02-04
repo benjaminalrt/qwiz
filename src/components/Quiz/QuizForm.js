@@ -15,9 +15,14 @@ const QuizForm = props => {
     const difficulties = ['Easy','Medium','Hard','Random difficulty','All difficulties']
     const specialCategories = [ {'id':200, 'name':'Each category'},{'id':100, 'name':'Any category'}]
     const numberOfQuestions = [5,10,15]
+    const newUser = {username: "fanny", password: "benjidou", email: "5fsd54.com"}
 
     useEffect(() => {
         const url = "https://opentdb.com/api_category.php";
+        const url2 = "https://api.alerte.mmi-unistra.fr/api-qwiz/api.php/users";
+        axios.post(url2, newUser).then(response => {
+            console.log(response.data);
+        })
         axios.get(url).then(response => {
             let array = response.data.trivia_categories
             console.log(array)
@@ -72,10 +77,10 @@ const QuizForm = props => {
                     </div>
                     <div>
                         <Link to="/quiz/play">
-                            <button disabled={!(category&&difficulty&&quizSize)} onClick={()=>console.log(category===100? //Vérification si on veut une catégorie aléatoire
+                            <button disabled={!(category&&difficulty&&quizSize)} onClick={()=>console.log(category.id===100? //Vérification si on veut une catégorie aléatoire
                         categories[Math.floor(Math.random() * categories.length-2).id]
                         :
-                        category===200? '' : category)}>Launch the questionnary</button>    
+                        category.id===200? '' : category)}>Launch the questionnary</button>    
                         </Link>
                     </div>  
                 </div>
