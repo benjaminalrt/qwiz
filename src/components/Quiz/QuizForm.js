@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link, useLocation } from "react-router-dom";
 import QuizList from "./QuizList";
 import "../../styles/Quiz/QuizForm.css";
-
 import axios from "axios";
 
 const QuizForm = props => {
@@ -15,14 +14,9 @@ const QuizForm = props => {
     const difficulties = ['Easy','Medium','Hard','Random difficulty','All difficulties']
     const specialCategories = [ {'id':200, 'name':'Each category'},{'id':100, 'name':'Any category'}]
     const numberOfQuestions = [5,10,15]
-    const newUser = {username: "fanny", password: "benjidou", email: "5fsd54.com"}
 
-    useEffect(() => {
+    useEffect(() => { 
         const url = "https://opentdb.com/api_category.php";
-        const url2 = "https://api.alerte.mmi-unistra.fr/api-qwiz/api.php/users";
-        axios.post(url2, newUser).then(response => {
-            console.log(response.data);
-        })
         axios.get(url).then(response => {
             let array = response.data.trivia_categories
             console.log(array)
@@ -36,9 +30,9 @@ const QuizForm = props => {
 
     return (
         <Switch>
-            <Route path="/quiz/chose">
-                <div className='container-fluid'>
-                    <h2>Questionnary selector</h2>
+            <Route exact path="/play">
+                <div className='container'>
+                    <h2>Questionnary selector </h2>
                     <div className='category-selector'>
                         <h3>Chose a category {category}</h3>
                         <div className='row'>
@@ -76,7 +70,7 @@ const QuizForm = props => {
                         })}
                     </div>
                     <div>
-                        <Link to="/quiz/play">
+                        <Link to="/play/questionnary">
                             <button disabled={!(category&&difficulty&&quizSize)} onClick={()=>console.log(category.id===100? //Vérification si on veut une catégorie aléatoire
                         categories[Math.floor(Math.random() * categories.length-2).id]
                         :
@@ -85,7 +79,7 @@ const QuizForm = props => {
                     </div>  
                 </div>
             </Route>
-            <Route path="/quiz/play">
+            <Route path="/play/questionnary">
                 <QuizList
                     category={category===100? //Vérification si on veut une catégorie aléatoire
                         categories[Math.floor(Math.random() * categories.length-2)].id

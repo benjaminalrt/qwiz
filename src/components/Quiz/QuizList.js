@@ -48,7 +48,7 @@ const QuizList = props => {
 
     
     return (
-        <div>
+        <div className="container">
         {/* Chargmement en attendant que l'API nous a bien envoyé les données*/}
         {isLoaded ?
             // Tant que le questionnaire n'est pas finis, on affiche les questions successivement
