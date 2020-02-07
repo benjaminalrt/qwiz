@@ -2,12 +2,12 @@
 .category-selector__list{
     display: flex;
 }
-.category-selector__tile,.difficulty-selector__tile{
+.category-selector__tile,.difficulty-selector__tile, .number-selector__tile{
     height: 100px;
     width: 150px;
     border: solid black;
     border-radius: 30px;
 }
 .tile-selected{
-    background-color: aquamarine;
+    background-color: coral;
 }

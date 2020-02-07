@@ -1,15 +1,16 @@
 import React from 'react';
-import { Switch, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import "../../../styles/components/footer.css";
 
 const Footer = props => {
 
 
     return(<>
-    <div className="container-fluid header-custom">
+    <div className="container-fluid footer-custom">
         <div className="container">
             <div className="d-flex justify-content-around align-items-center">
                 <div className="w-50">
-                    <Link to="/">[IMAGE QWIZ]</Link>
+                    <Link to="/"></Link>
                 </div>
                 <div className="d-flex justify-content-around w-50">
                     <Link to="/">Mentions légales</Link>

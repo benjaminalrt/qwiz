@@ -6,3 +6,24 @@ body a {
 body a:hover {
   color: black;
 }
+
+#root{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container{
+  padding: 10px 0;
+}
+
+.btn-custom-primary{
+  background-color:		#7f50ff !important;
+  color: white !important;
+  border: solid 1px black !important;
+}
+
+.impact{
+  color: coral;
+  font-weight: bold;
+}

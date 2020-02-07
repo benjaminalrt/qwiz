@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Link } from "react-router-dom";
+import {  Link } from "react-router-dom";
 import "../../../styles/components/header.css";
 
 
@@ -11,12 +11,11 @@ const Header = props => {
         <div className="container">
             <div className="d-flex justify-content-around align-items-center">
                 <div className="w-50">
-                    <Link to="/">[IMAGE QWIZ]</Link>
+                    <h2><Link to="/">QWIZ</Link></h2>
                 </div>
                 <div className="d-flex justify-content-around w-50">
                     <Link to="/">Home</Link>
                     <Link to="/play">Play</Link>
-                    <Link to="/create">Create</Link>
                     <Link to="/profile">Profile</Link>
                 </div>
             </div>

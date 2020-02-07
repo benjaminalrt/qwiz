@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { utf8 } from "../../utils"
-
+import "../../styles/Quiz/QuizQuestion.css";
 
 const QuizQuestion = props => {
 
@@ -14,35 +14,42 @@ const QuizQuestion = props => {
     }, [props.question.incorrect_answers, props.question.correct_answer]);
 
     /* Display answers list */
-    const displayChoices = (question,qindex)=>{
+    const displayChoices = (question)=>{
         if(question.type==='multiple'){
             return(
-                <div className='ok'>
-                    <p>Select your response:</p>
+                <>
+                    <p><span className="impact">Select your response:</span></p>
+                <div className="question-custom row" >
                     {answersList.map((answer, id)=>{
                         return(
-                            <div key={'R'+id}>
-                                <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'r'+id} name={'q'+(qindex+1)} value={answer}/>
-                                <label htmlFor={'q'+(qindex+1)+'r'+id}>{utf8(answer)}</label>
+                            <div key={'R'+id} className="question-custom__container col-6">
+                                <div className={"question-custom__responses d-flex "+(props.answer===answer?"selected":"")} onClick={()=>props.handleClick(answer)}>
+                                    <h5>{utf8(answer)}</h5>    
+                                </div>
                             </div>
                             )
                         })} 
                 </div>
+                </>
             )
         }
         if(question.type==='boolean'){
             return(
-                <div>
-                    <p>Select your response:</p>
-                        <div>
-                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'true'} name={'q'+(qindex+1)} value="True"/>
-                            <label htmlFor={'q'+(qindex+1)+'true'}>True</label>
+                <>
+                    <p><span className="impact">Select your response:</span></p>
+                <div className="question-custom row" >
+                        <div key={'R1'} className="question-custom__container col-6">
+                            <div className={"question-custom__responses d-flex "+(props.answer==='true'?"selected":"")} onClick={()=>props.handleClick('true')}>
+                                <h5>True</h5>    
+                            </div>
                         </div>
-                        <div>
-                            <input type="radio" onClick={props.handleChange} id={'q'+(qindex+1)+'false'} name={'q'+(qindex+1)} value="False"/>
-                            <label htmlFor={'q'+(qindex+1)+'false'}>False</label>
+                        <div key={'R2'} className="question-custom__container col-6">
+                            <div className={"question-custom__responses d-flex "+(props.answer==='false'?"selected":"")} onClick={()=>props.handleClick('false')}>
+                                <h5>False</h5>    
+                            </div>
                         </div>
                 </div>
+                </>
             )
         }
     
@@ -59,10 +66,10 @@ const QuizQuestion = props => {
         { category: "", correct_answer: "", difficulty: "", incorrect_answers: (n) [], question: "", type: "multiple/boolean" }
     */
     return (
-            <div className="Blah">
-                <h3>Question number {props.index+1}</h3>
-                <h4>Category: {props.question.category} (difficulty {props.question.difficulty})</h4>
-                <h5>{utf8(props.question.question)}</h5>
+            <div className="question-container">
+                <h1>Question number {props.index+1}</h1>
+                <h6>Category: {props.question.category} (difficulty {props.question.difficulty})</h6>
+                <h3 className="mt-5">{utf8(props.question.question)}</h3>
 
                 {displayChoices(props.question)}
             </div>

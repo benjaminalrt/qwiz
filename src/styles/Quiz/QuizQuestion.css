@@ -1,0 +1,23 @@
+.question-container{
+    text-align: center;
+}
+
+.question-custom__responses{
+    height: 100px;
+    width: 200px;
+    border: solid black;
+    border-radius: 30px;
+    margin: auto;
+}
+
+.question-custom__container{
+    margin: 20px 0 ;
+}
+
+.question-custom__responses h5{
+    margin: auto;
+}
+
+.selected{
+    background-color: coral;
+}

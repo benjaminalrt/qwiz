@@ -1,45 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, Link, useLocation } from "react-router-dom";
 import QuizList from "./QuizList";
+import { Switch, Route, Link } from "react-router-dom";
 import "../../styles/Quiz/QuizForm.css";
-import axios from "axios";
 
 const QuizForm = props => {
 
-    const [categories, setCategories] = useState([])
     const [quizSize, setQuizSize] = useState();
     const [category, setCategory] = useState('');
     const [difficulty, setDifficulty] = useState('');
+    const [isLaunched, setIsLaunched] = useState(false)
+    const [isConnected, setIsConnected] = useState(false)
 
     const difficulties = ['Easy','Medium','Hard','Random difficulty','All difficulties']
-    const specialCategories = [ {'id':200, 'name':'Each category'},{'id':100, 'name':'Any category'}]
     const numberOfQuestions = [5,10,15]
 
-    useEffect(() => { 
-        const url = "https://opentdb.com/api_category.php";
-        axios.get(url).then(response => {
-            let array = response.data.trivia_categories
-            console.log(array)
-            array.sort((a,b)=>{
-                if(a.name<b.name) return -1
-                else return 1;
-            })
-            setCategories(array.concat(specialCategories))
-        });
+    const categories = JSON.parse(localStorage.getItem('categories'))
+
+    useEffect(()=>{
+        if(localStorage.getItem('user'))
+            setIsConnected(true)
     }, []);
 
     return (
-        <Switch>
-            <Route exact path="/play">
+        <div className="container my-auto">
+            {isConnected?
+                !isLaunched?
                 <div className='container'>
-                    <h2>Questionnary selector </h2>
+                    <h1 className="text-center">Questionnary selector </h1>
                     <div className='category-selector'>
-                        <h3>Chose a category {category}</h3>
+                        <h3 className="text-center my-3">Chose a category</h3>
                         <div className='row'>
                         {categories.map((cat, index)=>{
                             return(
-                                    <div key={index} onClick={()=>setCategory(cat.id)} className={'category-selector__tile mx-3 my-2 p-2 '+ (cat.id===category? 'tile-selected':'')} >
-                                        <h6 >{cat.name}</h6>
+                                    <div key={index} onClick={()=>setCategory(cat.id)} className={'category-selector__tile d-flex mx-3 my-2 p-2 '+ (cat.id===category? 'tile-selected':'')} >
+                                        <h6 className="m-auto">{cat.name}</h6>
                                     </div>
                             )
                         })}
@@ -47,53 +41,39 @@ const QuizForm = props => {
                     </div>
 
                     <div>
-                        <h3>Chose a difficulty {difficulty}</h3>
+                        <h3 className="text-center my-3">Chose a difficulty {difficulty}</h3>
                         <div className='row'>
                             {difficulties.map((diff, index)=>{
                                 return(
-                                    <div key={index} onClick={()=>setDifficulty(diff)} className={'difficulty-selector__tile mx-3 my-2 p-2 '+ (difficulty===diff? 'tile-selected':'')}>
-                                        <h6>{diff}</h6>
+                                    <div key={index} onClick={()=>setDifficulty(diff)} className={'difficulty-selector__tile d-flex mx-3 my-2 p-2 '+ (difficulty===diff? 'tile-selected':'')}>
+                                        <h6 className="m-auto">{diff}</h6>
                                     </div>
                                 )
                             })}
                         </div>
                     </div>
                     <div>
-                        <h3>Chose a number of questions {quizSize}</h3>
+                        <h3 className="text-center my-3">Chose a number of questions</h3>
+                        <div className='row'>
                         {numberOfQuestions.map((nb,index)=>{
                             return(
-                                <div key={index}>
-                                    <input name='nbQ' id={'nbQ'+index} type='radio' value={nb} onChange={(e)=>setQuizSize(e.target.value)} />
-                                    <label htmlFor={'nbQ'+index}>{nb}</label>
+                                <div key={index} className={'number-selector__tile d-flex mx-3 my-2 p-2 '+ (quizSize===nb? 'tile-selected':'')} onClick={(e)=>setQuizSize(nb)}>
+                                    <h6 className="m-auto">{nb}</h6>
                                 </div>
                             )
                         })}
+                        </div>
                     </div>
                     <div>
-                        <Link to="/play/questionnary">
-                            <button disabled={!(category&&difficulty&&quizSize)} onClick={()=>console.log(category.id===100? //Vérification si on veut une catégorie aléatoire
-                        categories[Math.floor(Math.random() * categories.length-2).id]
-                        :
-                        category.id===200? '' : category)}>Launch the questionnary</button>    
-                        </Link>
+                            <button className="btn btn-custom-primary" disabled={!(category&&difficulty&&quizSize)} onClick={()=>{setIsLaunched(true)} }>Launch the questionnary</button>
                     </div>  
                 </div>
-            </Route>
-            <Route path="/play/questionnary">
-                <QuizList
-                    category={category===100? //Vérification si on veut une catégorie aléatoire
-                        categories[Math.floor(Math.random() * categories.length-2)].id
-                        :
-                        category===200? '' : category} //Vérification si on veut une diff précise ou toutes les diff
-
-                    difficulty={difficulty==='Random difficulty'? //Vérification si on veut une diff aléatoire
-                        ['easy','medium','hard'][Math.floor(Math.random() * 3)].toLowerCase()
-                        :
-                        difficulty==='All difficulties'? '' : difficulty.toLowerCase()} //Vérification si on veut une diff précise ou toutes les diff
-
-                    quizSize={quizSize} />
-            </Route>
-        </Switch>
+                :
+                <QuizList category={category} difficulty={difficulty} quizSize={quizSize} />
+                :
+                <p>You have to log in to play !<br/>
+                    <Link to='/profile'>No account? Create it now!</Link></p>}
+        </div>
     )
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import QuizQuestion from "./QuizQuestion";
 import axios from "axios";
 import { utf8 } from "../../utils"
@@ -7,6 +7,7 @@ import { utf8 } from "../../utils"
 
 const QuizList = props => {
     const [isLoaded, setIsLoaded] = useState(false); // Etat de chargement de l'API
+    const [isFinished, setIsFinished] = useState(false)
 
     const [questions, setQuestions] = useState([]); // Liste de questions
     const [index, setIndex] = useState(0); // Index de la question actuelle
@@ -15,60 +16,87 @@ const QuizList = props => {
     const [answers, setAnswers] = useState([]); // Liste des réponses données par l'utilisateur
     const [score, setScore] = useState(0); // Score de l'utilisateur
 
+
+    const categories = JSON.parse(localStorage.getItem('categories'))
+
     useEffect(() => {
-        const url = "https://opentdb.com/api.php?amount="+props.quizSize+"&category="+props.category+"&difficulty="+props.difficulty
+        var cat = props.category
+        var dif = props.difficulty.toLowerCase()
+        if (props.category===100)
+            cat = categories[Math.floor(Math.random() * categories.length-2)].id
+        else if (props.category===200)
+            cat = ''
+        if (props.difficulty==='Random difficulty')
+            dif = ['easy','medium','hard'][Math.floor(Math.random() * 3)]
+        else if (props.difficulty==='All difficulties')
+            dif = ''
+        
+        const url = "https://opentdb.com/api.php?amount="+props.quizSize+"&category="+cat+"&difficulty="+dif
         axios.get(url).then(response => {
-            console.log(response.data.results)
-            console.log(url)
             setQuestions(response.data.results);
-            setIsLoaded(isLoaded => !isLoaded);
+            setIsLoaded(true);
         });
     }, [props.quizSize, props.category, props.difficulty]);
 
     const changeQuestion = ()=>{
-        if(answer===questions[index].correct_answer)
-            setScore(score+1)
+        let i = index;
+        let s = score;
+        setIsLoaded(false)
+        if(answer===questions[i].correct_answer)
+        {
+            s++
+            setScore(s)
+        }
         // stockage des réponses de l'utilisateurs
         setAnswers(answers.concat(answer))
         // réinitialisation de la réponse donnée par l'utilisateur
         setAnswer('')
         // on passe à la question suivante
-        setIndex(index+1)
+        i++
+        setIndex(i)
+        if((i+1)>questions.length){
+            storeScore(s)
+        }
+        else{
+            setIsLoaded(true)
+        }
     }
 
-    const handleChange = (e)=>{
-        setAnswer(e.target.value)
+    const storeScore = (s)=>{
+        let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/scores"
+        let totalScore = (100*s)/questions.length
+        let category = JSON.parse(localStorage.getItem('categories')).find(x => x.id == props.category).name;
+        let userScore = {score: totalScore, category: category, difficulty: props.difficulty, size: props.quizSize, username: localStorage.getItem('user')}
+        axios.post(url, userScore).then(response =>{
+            console.log(response.data)
+        }).then(setIsFinished(true)).then(setIsLoaded(true));
+}
+
+    const handleClick = (answer)=>{
+        setAnswer(answer)
     }
 
-
-    /* QUESTIONS LOOK    LIKE :   
-        { category: "", correct_answer: "", difficulty: "", incorrect_answers: (n) [], question: "", type: "multiple/boolean" }
-    */
-
-
-    
     return (
-        <div className="container">
+        <>
         {/* Chargmement en attendant que l'API nous a bien envoyé les données*/}
         {isLoaded ?
             // Tant que le questionnaire n'est pas finis, on affiche les questions successivement
-            (index+1)<=questions.length?
+            (!isFinished ?
                 <>
                     <QuizQuestion
                         question={questions[index]}
                         index={index}
-                        handleChange={(e)=>handleChange(e)}
+                        handleClick={handleClick}
+                        answer={answer}
                         key={'question'+index}
                     />
                     
-                    {answer? <p>Chosen answer: {utf8(answer)}</p> : <p>Choisir une réponse.</p>}
-                    
-                    <button onClick={()=>{changeQuestion()}} disabled={!answer}>Validate</button>
+                    <button className="btn btn-custom-primary d-block mx-auto" onClick={()=>{changeQuestion()}} disabled={!answer}>Validate</button>
                 </>
                 :
                 <>
-                    <p>Questionnaire terminé.</p>
-                    <div>
+                    <h1 className="text-center">Finished!</h1>
+                    <div className="score-board__custom">
                         <p>Score: {(100*score)/questions.length} points.</p>
                         <p>Correct answers: {score}/{questions.length}.</p>
                         <div>
@@ -96,10 +124,10 @@ const QuizList = props => {
                                 <button>HEY</button>
                         </Link>
                     </div>
-                </>
-        : <p>Loading...</p>
+                </>)
+        : <h1 className="text-center"><span className="impact">QWIZ IS LOADING</span></h1>
         }
-        </div>
+        </>
     )
 
 }

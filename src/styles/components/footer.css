@@ -1,0 +1,8 @@
+.footer-custom{
+    margin-top: auto;
+    background-color: coral;
+}
+
+.footer-custom>div>div{
+    height: 50px;
+}
