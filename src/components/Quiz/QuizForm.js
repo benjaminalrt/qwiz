@@ -18,7 +18,15 @@ const QuizForm = props => {
 
     useEffect(()=>{
         if(localStorage.getItem('user'))
+        {
             setIsConnected(true)
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const cat = urlParams.get('cat');
+        if(cat)
+        {
+            setCategory(parseInt(cat));
+        }
     }, []);
 
     return (

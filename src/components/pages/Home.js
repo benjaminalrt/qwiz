@@ -4,23 +4,19 @@ import axios from "axios";
 
 const Home = props => {
 
+    const URL = "https://api-quizz.korogames.online/index.php/api";
+
     const [bestScores, setBestScores] = useState([])
-    const [bestUsers, setBestUsers] = useState([])
-    const categories = JSON.parse(localStorage.getItem('categories'))
+    const categories = JSON.parse(localStorage.getItem('categories')) ?? []
 
     useEffect(() => {
-        const url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/scores";
+        const url = URL+"/scores";
         axios.get(url).then(response => {
-            let array = [response.data[0], response.data[1], response.data[2]]
-            setBestScores(array)
-            var users = []
-            array.map((score,id)=>{   
-                let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/users/"+score.user
-                axios.get(url).then((response) => {
-                    users[id]=response.data.username
-                    if(id===2) setBestUsers(users)
-                })
-            })
+            if(response.data.length)
+            {
+                let array = response.data
+                setBestScores(array);
+            }
         })
     }, []);
 
@@ -34,11 +30,11 @@ const Home = props => {
             <div>
                 <h2 className="text-center my-5">Best scores</h2>
                 <div className="row ml-5">
-                {bestScores.map((bestScore, id)=>{
+                {bestScores.length == 0 ? "Aucun score enregistré" : bestScores.map((bestScore, id)=>{
                         return(
                         <div key={id} className="col-4">
                             <h3><span className="impact"> {id+1}. {bestScore.score} points</span></h3>
-                            <h6>Scored by <span className="impact">{bestUsers[id]}</span> <br/>
+                            <h6>Scored by <span className="impact">{bestScore.username}</span> <br/>
                             Category : {bestScore.category} <br/>
                             Difficulty : {bestScore.difficulty}</h6>
                         </div>
@@ -52,12 +48,12 @@ const Home = props => {
                     <div className="col-6">
                         {categories.map((category, index)=>{
                     if(index<(categories.length/2))
-                        return(<li key={index}><Link to={"/play?id="+category.id}>{category.name}</Link></li>)})}
+                        return(<li key={index}><Link to={"/play?cat="+category.id}>{category.name}</Link></li>)})}
                     </div>
                     <div className="col-6">
                         {categories.map((category, index)=>{
                     if(index>=(categories.length/2))
-                        return(<li key={index}><Link to={"/play?id="+category.id}>{category.name}</Link></li>)})}
+                        return(<li key={index}><Link to={"/play?cat="+category.id}>{category.name}</Link></li>)})}
                     </div>
                 </div>
             </div>

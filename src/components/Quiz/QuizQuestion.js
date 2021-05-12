@@ -39,12 +39,12 @@ const QuizQuestion = props => {
                     <p><span className="impact">Select your response:</span></p>
                 <div className="question-custom row" >
                         <div key={'R1'} className="question-custom__container col-6">
-                            <div className={"question-custom__responses d-flex "+(props.answer==='true'?"selected":"")} onClick={()=>props.handleClick('true')}>
+                            <div className={"question-custom__responses d-flex "+(props.answer==='True'?"selected":"")} onClick={()=>props.handleClick('True')}>
                                 <h5>True</h5>    
                             </div>
                         </div>
                         <div key={'R2'} className="question-custom__container col-6">
-                            <div className={"question-custom__responses d-flex "+(props.answer==='false'?"selected":"")} onClick={()=>props.handleClick('false')}>
+                            <div className={"question-custom__responses d-flex "+(props.answer==='False'?"selected":"")} onClick={()=>props.handleClick('False')}>
                                 <h5>False</h5>    
                             </div>
                         </div>
@@ -60,7 +60,6 @@ const QuizQuestion = props => {
         array.sort(() => Math.random() - 0.5);
      }
 
-     console.log(props.question.correct_answer)
 
     /* QUESTIONS LOOK    LIKE :   
         { category: "", correct_answer: "", difficulty: "", incorrect_answers: (n) [], question: "", type: "multiple/boolean" }

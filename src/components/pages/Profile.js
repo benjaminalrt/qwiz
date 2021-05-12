@@ -3,6 +3,8 @@ import axios from "axios";
 
 const Profile = props => {
 
+    const URL = "https://api-quizz.korogames.online/index.php/api";
+
     const [isConnected,setIsConnected] = useState(false);
     const [isCreating,setIsCreating] = useState(false);
     const [user,setUser] = useState({username: '', password: ''});
@@ -19,7 +21,7 @@ const Profile = props => {
             setIsCreating(true)
         }
         if(localStorage.getItem('user')!==null){
-            let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/user/"+localStorage.getItem('user')
+            let url = URL+"/user/"+localStorage.getItem('user')
             axios.get(url).then(response=>{
                 setUser(response.data)
                 setIsConnected(true)
@@ -28,7 +30,7 @@ const Profile = props => {
     }, []);
 
     const registerUser = ()=>{
-        let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/users"
+        let url = URL+"/user"
         axios.post(url, user).then(response =>{
             if(response.data==='0'){
                 setErrors('Username already taken')
@@ -46,9 +48,8 @@ const Profile = props => {
     }
 
     const updateUser = ()=>{
-        let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/user/"+localStorage.getItem('user')
+        let url = URL+"/user/"+localStorage.getItem('user')
         axios.put(url, user).then(response =>{
-            console.log(response.data)
             if(!response.data){
                 setErrors('Problem')
                 setSuccess('')
@@ -65,7 +66,7 @@ const Profile = props => {
     }
 
     const deleteUser = ()=>{
-        let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/user/"+localStorage.getItem('user')
+        let url = URL+"/user/"+localStorage.getItem('user')
         axios.delete(url).then(response =>{
             if(!response.data){
                 setErrors('A problem has occurred')
@@ -85,9 +86,9 @@ const Profile = props => {
     }
 
     const tryConnection = ()=>{
-        let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/user/"+user.username
-        axios.get(url).then(response=>{
-            if(response.data.password===user.password){
+        let url = URL+"/user_connection/"+user.username
+        axios.post(url, user).then(response=>{
+            if(response.data){
                 localStorage.setItem('user', user.username)
                 setIsConnected(true);
                 setErrors('')
@@ -127,7 +128,6 @@ const Profile = props => {
             setMatch(true)
             setCheckPassword('')
             setErrors('')
-            console.log('cool')
         }
         else{
             setMatch(false)
@@ -137,12 +137,12 @@ const Profile = props => {
     }
 
     const displayProfile = ()=>{
-        if(scores.length===0)
+        if(scores.length===0 && isConnected)
         {
-            let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/scores/"+localStorage.getItem('user')
+            let url = URL+"/user_scores/"+localStorage.getItem('user')
                 axios.get(url).then(response=>{
                     if(response.data.length===0){
-                        setScores([{empty:'You have to play to populate your history'}])
+                        setScores([])
                     }
                     else{
                         setScores(response.data);
@@ -157,11 +157,11 @@ const Profile = props => {
 
                 <h4>Game history</h4>
                 <ul>
-                    {scores.map((score,id)=>{
+                    {scores.length == 0 ? "You have to play a game to get scores !" :scores.map((score,id)=>{
                         var date = new Date(score.date)
                         var dateString = date.toLocaleDateString()
                         return(
-                        <li key={id}>{dateString}<br/>
+                        <li key={id}>
                         {'Category : '+score.category}<br/>
                         {'Difficulty: '+score.difficulty}<br/>
                         {'Score: '+score.score}
@@ -182,7 +182,7 @@ const Profile = props => {
                     <input id="updatePassword" type="password" onChange={handleChangeUser}/>
                     <button className="btn btn-success" onClick={updateUser}>SAVE</button>
                     <button className="btn btn-danger" onClick={deleteUser}>DELETE USER</button>
-                    <p>{user.username+user.password}</p>
+                    {/* <p>{user.username+user.password}</p> */}
                     
                 </> : null}
                 <br/>

@@ -6,6 +6,7 @@ import { utf8 } from "../../utils"
 
 
 const QuizList = props => {
+    const URL = "https://api-quizz.korogames.online/index.php/api";
     const [isLoaded, setIsLoaded] = useState(false); // Etat de chargement de l'API
     const [isFinished, setIsFinished] = useState(false)
 
@@ -63,7 +64,7 @@ const QuizList = props => {
     }
 
     const storeScore = (s)=>{
-        let url = "http://api.alerte.mmi-unistra.fr/api-qwiz/api.php/scores"
+        let url = URL+"/scores"
         let totalScore = (100*s)/questions.length
         let category = JSON.parse(localStorage.getItem('categories')).find(x => x.id == props.category).name;
         let userScore = {score: totalScore, category: category, difficulty: props.difficulty, size: props.quizSize, username: localStorage.getItem('user')}
@@ -118,11 +119,6 @@ const QuizList = props => {
                                 })}
                             </ul>
                         </div>
-                    </div>
-                    <div>
-                        <Link to="/quiz/chose">
-                                <button>HEY</button>
-                        </Link>
                     </div>
                 </>)
         : <h1 className="text-center"><span className="impact">QWIZ IS LOADING</span></h1>
